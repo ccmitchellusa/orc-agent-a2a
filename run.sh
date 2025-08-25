@@ -1,26 +1,20 @@
 #!/bin/bash
 
-# Launches the agent(s) using the A2A Server framework written by Chris Hay
-#
-# Usage: A2A Server (YAML config) [-h] [-c CONFIG] [-p HANDLER_PACKAGES] [--no-discovery] [--log-level {debug,info,warning,error,critical}] [--list-routes] [--enable-flow-diagnosis]
-#
-# Options:
-#  -h, --help            show this help message and exit
-#  -c, --config CONFIG   YAML config path, eg. 'agent.yaml' 
-#                        The YAML can contain multiple agent definitions. See a2a-server README for multiple agent example.
-#  -p, --handler-package HANDLER_PACKAGES
-#                        Additional packages to search for handlers.  Handlers are the Agent modules, eg. 'pirate_agent_a2a'
-#  --no-discovery        Disable automatic handler discovery
-#  --log-level {debug,info,warning,error,critical}
-#                        Override configured log level
-#  --list-routes         List all registered routes after initialization
-#  --enable-flow-diagnosis
-#                        Enable detailed flow diagnosis and tracing for pub/sub event handling.
+# Launch the Orc Agent using the A2A Server framework
+# Default: Run with info logging
+# Debug mode: ./run.sh debug
+# Production: ./run.sh prod
 
-# TODO: uv concurrency limit needs to match the Code Engine Max concurrency setting when run on IBM Cloud
+LOG_LEVEL=${1:-info}
 
-# uv run -m orc_agent_a2a.main --config agent.yaml --log-level debug --enable-flow-diagnosis
-uv run -m orc_agent_a2a.main --config agent.yaml --log-level debug --list-routes 
-# uv run -m orc_agent_a2a.main --config agent.yaml --log-level debug 
-# uv run -m orc_agent_a2a.main --config agent.yaml
+if [ "$LOG_LEVEL" = "debug" ]; then
+    echo "Starting Orc Agent in debug mode..."
+    uv run -m orc_agent_a2a.main --config agent.yaml --log-level debug --list-routes
+elif [ "$LOG_LEVEL" = "prod" ]; then
+    echo "Starting Orc Agent in production mode..."
+    uv run -m orc_agent_a2a.main --config agent.yaml
+else
+    echo "Starting Orc Agent with log level: $LOG_LEVEL"
+    uv run -m orc_agent_a2a.main --config agent.yaml --log-level $LOG_LEVEL
+fi
 

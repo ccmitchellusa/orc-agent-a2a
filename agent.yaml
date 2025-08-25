@@ -7,7 +7,7 @@ handlers:
   default: orc_agent
 
   orc_agent:
-    type: a2a_server.tasks.handlers.google_adk_handler.GoogleADKHandler
+    type: a2a_server.tasks.handlers.adk.google_adk_handler.GoogleADKHandler
     agent: orc_agent_a2a.agent.root_agent
     name: orc_agent
     agent_card:
